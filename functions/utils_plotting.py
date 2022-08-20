@@ -1,6 +1,7 @@
 import pandas as pd
 import datetime
 
+# Create a dataframe from a numpy array.
 def create_df_response(samples, time, date_init ='2020-03-06',  quantiles = [50, 80, 95], forecast_horizon=27, dates=None, use_future=False):
     """[summary]
 

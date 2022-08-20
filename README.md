@@ -20,4 +20,15 @@ project/
 
 ## Instructions
 
-In order to reproduce the results presented in the project report, located in the docs folder, first run the file "01_inference_unvaccined_model.py", it takes less than an hour and crate the results for the unvaccinated scenario in the outputs folder, then the file "02_inference_vaccined_model.py" generate the results for the vaccinated scenario in the same folder and finally the file "03_plot_samples.py" creates the figures in the figs folder.
+In order to reproduce the results presented in the project report, located in the docs folder, first you can clone the repository or download it, then run the file "01_inference_unvaccined_model.py", it takes less than an hour and crate the results for the unvaccinated scenario in the outputs folder, then the file "02_inference_vaccined_model.py" generate the results for the vaccinated scenario in the same folder and finally the file "03_plot_samples.py" creates the figures in the figs folder.
+
+## Requirements
+### Libraries
+- tqdm
+- Numpy
+- Scipy
+- Pandas
+- Matplotlib
+
+### Storage
+You need more than 2Gb to store the results.

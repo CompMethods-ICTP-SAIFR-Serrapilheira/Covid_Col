@@ -1,6 +1,7 @@
 from scipy.stats import truncnorm
 import numpy as np
 
+# Kalman Filter function
 def eakf_step(x_prior, params_prior, obs_ens_time, obs_time, oev_time, dict_params_range, num_var=4):
 
     prior_mean_ct = obs_ens_time.mean()
@@ -40,6 +41,7 @@ def eakf_step(x_prior, params_prior, obs_ens_time, obs_time, oev_time, dict_para
 
     return x_post, param_post, obs_post
 
+# Check the limits of the parameters
 def checkbound_params(dict_params_range, params_ens, num_ensembles=300):
     params_update = []
     for idx_p, p in enumerate(dict_params_range.keys()):
@@ -64,6 +66,7 @@ def checkbound_params(dict_params_range, params_ens, num_ensembles=300):
 
     return np.array(params_update)
 
+# Check the limits of the state variables
 def checkbound_state_vars(x_state_ens, pop, num_params=8, num_ensembles=300):
     loww = 0
     upp  = pop
@@ -71,9 +74,11 @@ def checkbound_state_vars(x_state_ens, pop, num_params=8, num_ensembles=300):
     x_state_ens = np.clip(x_state_ens, 0, upp)
     return x_state_ens
 
+# Add variance to ensembles
 def inflate_ensembles(ens, inflation_value=1.2, num_ensembles=300):
     return np.mean(ens,1, keepdims=True)*np.ones((1,num_ensembles)) + inflation_value*(ens-np.mean(ens,1, keepdims=True)*np.ones((1,num_ensembles)))
 
+# Sample parameters from uniform distribution
 def sample_params_uniform(dict_params_range, num_ensembles=100):
     param_ens_prior = []
     for p in dict_params_range.keys():
@@ -83,6 +88,7 @@ def sample_params_uniform(dict_params_range, num_ensembles=100):
 def get_truncated_normal(mean=0, sd=1, low=0, upp=10):
     return truncnorm( (low - mean) / sd, (upp - mean) / sd, loc=mean, scale=sd )
 
+# Sample parameters from normal distribution
 def sample_params_normal(dict_params_range, params_mean, params_var, num_ensembles=300):
     param_ens_prior = []
     for idx_p, p in enumerate(dict_params_range.keys()):

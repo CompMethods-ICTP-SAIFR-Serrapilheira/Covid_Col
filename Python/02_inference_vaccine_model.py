@@ -5,17 +5,18 @@
 # First version 2022-08-15
 # ------------------------------------------------------#
 
-from matplotlib.dates import date2num, num2date #
+# Import libraries and functions
+from matplotlib.dates import date2num, num2date
 from matplotlib.colors import ListedColormap
 from matplotlib import dates as mdates
 from matplotlib.patches import Patch
 from matplotlib import pyplot as plt
 from matplotlib import ticker
-from scipy.stats import truncnorm#
-from tqdm import tqdm#
+from scipy.stats import truncnorm
+from tqdm import tqdm
 import time
 
-import pandas as pd#
+import pandas as pd
 import numpy as np
 import datetime
 import math
@@ -56,7 +57,7 @@ cases_df = prepare_cases(cases_df, col='I_NV+PD')
 cases_df = prepare_cases(cases_df, col='H_NV+PD')
 cases_df = prepare_cases(cases_df, col='M_NV+PD')
 
-
+# Calculate the infection fatality rate (IFR)
 IFR_Verity = [ .00161, .00695, .0309, .0844, .161, .595, 1.93, 4.28, 7.80 ]
 ifr_log    = np.log(IFR_Verity)
 
@@ -79,12 +80,14 @@ ifr = np.exp([fitted_ifr[0:6].mean(),fitted_ifr[6:11].mean(),fitted_ifr[11:16].m
 ifr_m = np.mean(ifr)*3.85
 iVfr  = 0.778*ifr_m
 
+# define the range of the parameters
 param_prior_dict  = {}
 param_prior_dict["beta"]  = [1.02, 1.12] # Contact rate range
 param_prior_dict["alpha"] = [0.29, 0.4] # Report rate range [1% - 100%]
 param_prior_dict["Vr"] = [1, 1647460]
 param_prior_dictV ={"Vr":[1131, 1331]}
 
+# define the dates and parameters for the model.
 date_init  = pd.to_datetime("2021-02-15")
 date_end   = pd.to_datetime("2021-10-27")
 
@@ -133,6 +136,7 @@ x_post_all    = np.zeros((num_state_vars, num_ensembles, num_steps, num_iters_sa
 theta         = np.zeros((num_params, num_iters_mif+1))
 ################################################
 
+# Run the model
 print(f"Running MIF  \n")
 
 cont = 0
@@ -192,7 +196,6 @@ for n in tqdm(range(num_iters_mif)):
             p_prior = checkbound_params(param_prior_dict, p_prior, num_ensembles=num_ensembles)
 
             param_post = p_prior.copy()
-            # Update parameters using confirmed cases
             x_prior = x.copy()
 
             oev_deaths_time = oev_df.loc[date]["OEV_deaths"]
@@ -207,7 +210,7 @@ for n in tqdm(range(num_iters_mif)):
             oev_deathsV_time = oev_df.loc[date]["OEV_deathsV"]
             deathsV_time = obs_df.loc[date]["smoothed_MuertesEsquemaCompleto"]
 
-            # Update parameters using confirmed deaths 
+            # Update parameters using confirmed vaccinated deaths 
             x_post, param_post, deathsV_obs_post = eakf_step(x_post, param_post, np.squeeze(deathsV_t), deathsV_time, oev_deathsV_time, param_prior_dict, num_var= num_state_vars)
 
             x_post     = checkbound_state_vars(x_state_ens=x_post, pop=N, num_params= num_state_vars, num_ensembles= num_ensembles)
@@ -217,7 +220,7 @@ for n in tqdm(range(num_iters_mif)):
             oev_confirmed_time = oev_df.loc[date]["OEV_confirmed"]
             confirmed_time = obs_df.loc[date]["smoothed_I_NV+PD"]
 
-
+            # Update parameters using confirmed cases
             x_post, param_post, confirmed_obs_post = eakf_step(x_post, param_post, np.squeeze(confirmed_t), confirmed_time, oev_confirmed_time, param_prior_dict, num_var=num_state_vars)
 
             x_post     = checkbound_state_vars(x_state_ens=x_post, pop=N, num_params=num_state_vars, num_ensembles=num_ensembles)
@@ -227,7 +230,7 @@ for n in tqdm(range(num_iters_mif)):
             oev_confirmedV_time = oev_df.loc[date]["OEV_confirmedV"]
             confirmedV_time = obs_df.loc[date]["smoothed_InfectadosEsquemaCompleto"]
 
-
+            # Update parameters using confirmed vaccinated cases
             x_post, param_post, confirmedV_obs_post = eakf_step(x_post, param_post, np.squeeze(confirmedV_t), confirmedV_time, oev_confirmedV_time, param_prior_dict, num_var=num_state_vars)
 
             x_post     = checkbound_state_vars(x_state_ens=x_post, pop=N, num_params=num_state_vars, num_ensembles=num_ensembles)
@@ -264,6 +267,7 @@ for n in tqdm(range(num_iters_mif)):
     obs_post_save[:,:,:,cont1] = obs_post_time
     para_post_all[:,:,:,n] = param_post_time
     cont1 += 1
+    # save the results
     if (n+1)%num_save_iters == 0 and n != 0:
         obs_post_all[:,:,:,cont] = obs_post_save.mean(-1)
         x_post_all[:,:,:,cont]       = x_post_save.mean(-1)

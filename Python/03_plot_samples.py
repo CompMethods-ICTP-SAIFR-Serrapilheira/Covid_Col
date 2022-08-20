@@ -5,6 +5,7 @@
 # First version 2022-08-15
 # ------------------------------------------------------#
 
+# Import libraries and functions
 import os
 import numpy as np
 import pandas as pd
@@ -13,6 +14,7 @@ from matplotlib import dates as mdates
 from functions.adjust_cases import prepare_cases
 from functions.utils_plotting import create_df_response
 
+# Read 
 samples  = np.load('outputs/samples_agg_Final_450.npz')
 samplesV = np.load('outputs/samples_aggV_Final_360.npz')
 
@@ -139,6 +141,7 @@ ax.fill_between(df_Vr.index.values, df_Vr["high_50"], df_Vr["low_50"], color='b'
 
 ax.set_ylabel(r"# Vaccines", fontsize=15)
 ax.tick_params( which='both', axis='x', labelrotation=90, labelsize=15)
+plt.tight_layout()
 plt.savefig("figs/inference_vaccine.png")
 plt.show()
 

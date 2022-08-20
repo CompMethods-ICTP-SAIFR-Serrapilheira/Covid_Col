@@ -1,5 +1,5 @@
 ---
-title: 'Scientific workflows: report'
+title: 'Analysis of the impact of vaccination on the dynamics of COVID-19 in Colombia.'
 author:
 - Juan Montenegro Torres^*1,2,3*^, Jaime Cascante Vega^*3*^, Mauricio Santos Vega^*3*^
 - ^*1*^ Training Program in Quantitative Biology and Ecology, Serrapilheira/ICTP-SAIFR, São Paulo, BR
@@ -9,29 +9,31 @@ date: "July 17th 2022"
 output:
   html_document:
     df_print: paged
-abstract: |
   
 bibliography: Covid_col.bib
 ---
 
 ## Introdution
 
-SARS-CoV-2 has been the cause associated with high morbidity and mortality during the last two years (@cummingsEpidemiologyClinicalCourse2020, @wuCharacteristicsImportantLessons2020). This pathogen is respiratory through infection caused by small liquid particles from close contact between infectious and susceptible individuals (@Coronavirus, @liEarlyTransmissionDynamics2020). In the pre-vaccination scenario, the different countries' governments implemented non-pharmaceutical interventions (NPIs) such as facemasks, social distancing, and localized quarantines, among others, to control viral transmission (@premEffectControlStrategies2020). However, each of these NPIs varied in effectiveness across countries and regions, especially in lower-middle-income countries (LMICs), where the health system response to the COVID-19 pandemic is more limited (@carterCovid19Year2021). In this work, we aim to clarify aspects of transmission dynamics and epidemiological burden in this LMIC setting, specifically in Colombia.
+During the last two years, SARS-CoV-2 has been linked to high morbidity and mortality (@cummingsEpidemiologyClinicalCourse2020, @wuCharacteristicsImportantLessons2020) .This pathogen is respiratory through infection caused by small liquid particles from close contact between infectious and susceptible individuals (@Coronavirus, @liEarlyTransmissionDynamics2020). In the pre-vaccination scenario, the different countries’ governments implemented non-pharmaceutical interventions (NPIs) such as facemasks, social distancing, and localized quarantines, among others, to control viral transmission (@premEffectControlStrategies2020). In the vaccination scenario, national vaccination campaigns are implemented following prioritization based on risk and exposure to decrease deaths rapidly and impact transmission. These measures allow for the relaxation of control measures and a reduction in the impact of the COVID-19 pandemic (@gozziAnatomyFirstSix2022, @mcnamaraEstimatingEarlyImpact2022).However, each of these scenarios varied in effectiveness across countries and regions, especially in lower-middle-income countries (LMICs), where the health system's response to the COVID-19 pandemic is more limited (@carterCovid19Year2021). In this work, we aim to clarify aspects of transmission dynamics and epidemiological burden in this LMIC setting, specifically in Colombia, where the measure of the effectiveness of mass vaccination is intertwined with a high proportion of the population with previously acquired immunity by natural infection and the role of enhanced transmissibility and partial immune escape of new variants.
 
-Through the pandemic, mathematical models were used to understand and alert the public and governments, principally about the spread and mortality of SARS-CoV2 and have been used to characterize the mechanism behind the epidemiological dynamics of the virus in different scenarios and places from the measurements of cases and deaths (@bayerSemiparametricModelingSARSCoV22021). However, incorporating this information into inference led to a problem with the measurement noise and a lack of data for specific populations. Therefore, we use a SEIRD stochastic model, and an inference algorithm is used to predict the transmission's dynamics informed only by incident cases and deaths. We looked to study the dynamics of the disease in the whole population to observe the impact of the disease on the Colombia population.
+Through the pandemic, mathematical models were used to understand and alert the public and governments, principally about the spread and mortality of SARS-CoV2 and have been used to characterize the mechanism behind the epidemiological dynamics of the virus in different scenarios and places from the measurements of cases, deaths (@bayerSemiparametricModelingSARSCoV22021), and vaccination reports segregated by age and region. However, incorporating this information into inference led to a problem with the measurement noise and a lack of data for specific populations. Therefore, we use a SEIRD stochastic model, and an inference algorithm is used to predict the transmission’s dynamics informed only by incident cases and deaths.
 
-We used a method to estimate a variable time contact rate between people, which allows the model to capture the NPIs and changes in human behavior. We also included a time-varying reporting rate that enables the model to capture the changes in the infection testing policies in the country (@bayerSemiparametricModelingSARSCoV22021). Finally, we use an Ensemble Adjustment Kalman Filter (EAKF) for data assimilation and inference of the parameters that better adjust the model to the cases and deaths observed (@andersonEnsembleAdjustmentKalman2001).
+We used a method to estimate a variable time contact rate between people, which allows the model to capture the NPIs and changes in human behavior. We also included a time-varying reporting rate that enables the model to capture the changes in the infection testing policies in the country and the different cities (@bayerSemiparametricModelingSARSCoV22021). Finally, we use an Ensemble Adjustment Kalman Filter (EAKF) for data assimilation and inference of the parameters that better adjust the model to the cases and deaths observed (@andersonEnsembleAdjustmentKalman2001).
+
+Through the inference, we were able to observe that although vaccination controlled the Effective Reproduction Number in Colombia despite the fact that all the NPIs were gradually withdrawn, the loss of immunity induced by the infection reached by the majority of the population before the onset of mass vaccination allowed the highest peak of positive cases and deaths from COVID-19 but also significantly decreased the impact of the disease on people vaccinated with the full vaccination schedule.
 
 ## Methods
+
 ### Data
-We took the time series of daily reports by age of a cohort of 40 million people in Colombia of positive cases of COVID-19 and deaths, presented in the work of Arregoces-Castillo (@arregoces-castilloEffectivenessCOVID19Vaccines2022) which corresponded to the days between March 6, 2020 and February 14, 2021. Due to noisy data, we took the sum of the previous 7 days for each day of the time series and a Gaussian moving window that smoothed and averaged the different outliers.
+We took the time series of daily reports by age of a cohort of 40 million people in Colombia of positive cases of COVID-19 and deaths, presented in the work of Arregoces-Castillo (@arregoces-castilloEffectivenessCOVID19Vaccines2022), which corresponded to the days between March 6, 2020 and October 27, 2021. These cases and deaths are anonymized and segregated by those who have a complete vaccination schedule, those vaccinated with a single dose, or those who are not vaccinated. In our study, we included people in these last categories as people without a complete vaccination scheme. Due to noisy data, we took the sum of the previous 7 days for each day of the time series and a Gaussian moving window that smoothed and averaged the different outliers.
 
 ### Model
-The model divides the population into 14 compartments: S = susceptible individuals; E = exposed but not yet infectious individuals; Iu = infected unreported individuals who don’t carry out a test for COVID; Ir = infected reported individuals who carry out a test; Id = critical infected individuals who are eventually going to die; D = death individuals by COVID; R = recovery individuals and their respective compartments for the vaccinated individuals represented by a V; the dynamics between compartments are described in Figure 1, where α represents the report rate of the positive cases, ifr and ivfr the infection fatality rate for unvaccinated and vaccinated individuals respectively, κ the incubation period, γ the recovery period, γd the period in which a person goes from critical condition to death, Vr the vaccination rate, δ the loss immunity rate and λ the force of infection which is represented by the equation 1.
+The model divides the population into 14 compartments: S = susceptible individuals; E = exposed but not yet infectious individuals; Iu = infected unreported individuals who don’t carry out a test for COVID; Ir = infected reported individuals who carry out a test; Id = critical infected individuals who are eventually going to die; D = death individuals by COVID; R = recovery individuals and their respective compartments for the vaccinated individuals represented by a V; the dynamics between compartments are described in Figure 1, where α represents the report rate of the positive cases, ifr and ivfr the infection fatality rate for unvaccinated and vaccinated individuals respectively, κ the incubation period, γ the recovery period, γd the period in which a person goes from critical condition to death, Vr the vaccination rate, δ the loss immunity rate and λ the force of infection, which is represented by the equation 1.
 $$
 \lambda = \frac{I_r+ I_u+1-VEI(IV_r+IV_u)}{N}  (1)
 $$
-Where β represents the contact rate between the infectious and susceptible individuals, VEI the effectiveness of the vaccine against the infection, σ the relative transmission by the unreported individuals, and N the total population. Mathematically, the model is defined by the equations.
+Where β represents the contact rate between the infectious and susceptible individuals, VEI the effectiveness of the vaccine against the infection, σ the relative transmission by the unreported individuals, and N the total population. Mathematically, the model is defined by the following equations:
 
 |                Transitions                |                                       |
 |:-----------------------------------------:|:-------------------------------------:|
@@ -58,42 +60,47 @@ Where β represents the contact rate between the infectious and susceptible indi
 | D(t)=ΔIdD                          | DV(t)=ΔIVdD                                  |
 
 <center>
-```{r, fig.cap = "Figure 1. SEIIIRD Model", out.width=800}
-knitr::include_graphics("../figs/Model.png")
-```
+![Figure 1. SEIIIRD Model.](../figs/Model.png)
 </center>
 
 ### Transmission model fitting
-For this approach, we fitted the model to the time series of daily reports by age of a cohort of 40 million people in Colombia of positive cases of COVID-19 and deaths presented in Arregoces-Castillo's work (@arregoces-castilloEffectivenessCOVID19Vaccines2022), we inferred the parameters of the rate of contact between infected and susceptible people (β) and the reporting rate of confirmed cases of COVID-19 (ɑ)through the Ensemble Adjustment Kalman Filter (EAKF), and we inferred the other parameters constant over time. The parameter of the number of vaccines was forced to be 0 in the pre-vaccination time period. The EAKF was performed daily in sequence for the cases and deaths, and the gain of the parameters and the state variables was corrected with a range of allowed parameters established from the beginning and finally iterated 450 times.
+For this approach, we fitted the model to the time series of daily reports by age of a cohort of 40 million people in Colombia of positive cases of COVID-19 and deaths presented in Arregoces-Castillo’s work (@arregoces-castilloEffectivenessCOVID19Vaccines2022), which are segregated into people not vaccinated, with one dose, a complete schedule, and age group. For this study, we assumed that people with one dose are part of the unvaccinated population, and we inferred the parameters of the rate of contact between infected and susceptible people (β), the reporting rate of confirmed cases of COVID-19 (ɑ) and the number of vaccines that were applied each day (Vr) through the Ensemble Adjustment Kalman Filter (EAKF), and we inferred the other parameters constant over time. Since the parameter of the number of vaccines was forced to be 0 in the pre-vaccination time period, starting February 15, 2021, it was allowed to infer The EAKF was performed daily in sequence for the unvaccinated and vaccinated cases and deaths, and the gain of the parameters and the state variables was corrected with a range of allowed parameters established from the beginning and finally iterated 450 times the period of time pre-vaccination and 360 times the post-vaccination time period.
 
 
 ## Results
 
-By calculating the average of the iterations, it is possible to observe the trend of the model compared to the observations, as shown in figure 2.
+To validate the model, we took the average of the iterations and compared it with the real data of cases and deaths, as can be seen in Figure 2, where the median and confidence intervals of the simulations are shown.
+
 
 <center>
-```{r, fig.cap = "Figure 2. Fitting the model to the observations.", out.width=800}
-knitr::include_graphics("../figs/fitting_model.png")
-```
+![Figure 2. Fitting the model to the observations.](../figs/fitting_model.png)
 </center>
 
-It is also possible to observe how the contact rate and the reporting rate vary over time to achieve a better fit of the model, as can be seen in Figure 3, as well as the final result of each class in the model in Figure 4.
+It is also possible to observe how the contact rate and the reporting rate vary over time to achieve a better fit of the model, as well as the final result of each state variable in the model, as can be seen in the following figures.
 
 <center>
-```{r, fig.cap = "Figure 3. Parameter inference over time.", out.width=800}
-knitr::include_graphics("../figs/inference_results.png")
-```
+![Figure 3. Contact rate and report rate over time.](../figs/inference_parameters.png)
+</center>
+<center>
+![Figure 4. Number of vaccines over time.](../figs/inference_vaccine.png)
 </center>
 
 <center>
-```{r, fig.cap = "Figure 4. Inference of state variables over time.", out.width=800}
-knitr::include_graphics("../figs/state_variables.png")
-```
+![Figure 5. Inference of unvaccinated state variables over time.](../figs/state_variables_unvaccines.png)
+</center>
+<center>
+![Figure 4. Inference of vaccinated state variables over time.](../figs/state_variables_vaccines.png)
 </center>
 
 ## Discussion
 
+As can be seen, the model has a fairly close fit to real-world observations, which allows us to validate the results of parameter inference. Additionally, the variation of the contact rate before the vaccination process is observed, which decreases at the beginning but progressively begins to increase its value, which can be attributed to the containment measures applied at the beginning and its progressive relaxation and exceptions that were left. doing. However, once the mass vaccination process begins, a significant increase in the rate is observed, attributed to the removal of all restrictions and economic reactivation. However, this rise is regulated by the increase in people vaccinated throughout the year.
 
+Additionally, we can observe the efforts of the government for the massive testing and tracking of positive cases at the beginning of the pandemic, but since this massive testing was not enough for the number of cases presented and how over time it was decreasing until the economic reactivation, it was once again mandatory to carry out tests that proved the negative status of COVID-19.
+
+On the other hand, it is possible to observe that after the vaccination process began, the highest peak of positive cases in history was obtained, which is due in part to the fact that many people had already acquired immunity due to infection at the beginning of the pandemic and the loss of immunity before being vaccinated, which increased the number of infections, as well as the removal of contingency measures that reduced contacts between people, which facilitated the growth of the disease once again in the country.
+
+Finally, it is possible to observe the great effect that the use of mathematical models has on the understanding of the dynamics of a disease, as well as the inference of parameters and the possible prediction of behaviors, which can be used as a basis for decision-making. However, since COVID-19 is such a variable disease, it is necessary to continue studying its effects on the country and the effect it may have on different age groups.
 
 # References
 <div id="refs"></div>

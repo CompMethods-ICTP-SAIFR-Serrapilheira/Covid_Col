@@ -1,3 +1,11 @@
+# ----------------------------------------------------------------#
+# Scientific computing
+# ICTP/Serrapilheira 2022
+# Create dataframes for the analysis and visualization of results.
+# First version 2022-08-15
+# ----------------------------------------------------------------#
+
+# Import libraries
 import pandas as pd
 import datetime
 

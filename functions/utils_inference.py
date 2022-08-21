@@ -1,3 +1,12 @@
+# ----------------------------------------------------------------#
+# Scientific computing
+# ICTP/Serrapilheira 2022
+# Kalman filter step, initial sampling and the respective revisions 
+# of the limits.
+# First version 2022-08-15
+# ----------------------------------------------------------------#
+
+# Import libraries
 from scipy.stats import truncnorm
 import numpy as np
 

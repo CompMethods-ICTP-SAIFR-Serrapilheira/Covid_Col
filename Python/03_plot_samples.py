@@ -1,7 +1,7 @@
 # ------------------------------------------------------#
 # Scientific computing
 # ICTP/Serrapilheira 2022
-# Final project: COVID19 Colombia
+# Plot the results for analysis.
 # First version 2022-08-15
 # ------------------------------------------------------#
 

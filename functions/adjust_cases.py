@@ -1,10 +1,11 @@
 # ------------------------------------------------------#
 # Scientific computing
 # ICTP/Serrapilheira 2022
-# Final project: COVID19 Colombia
+# Prepare the data to get a better result from the model.
 # First version 2022-08-15
 # ------------------------------------------------------#
 
+# Import libraries
 import pandas as pd
 import numpy as np
 

@@ -1,10 +1,11 @@
 # ------------------------------------------------------#
 # Scientific computing
 # ICTP/Serrapilheira 2022
-# Final project: COVID19 Colombia
+# Model equations and transitions at each time step.
 # First version 2022-08-15
 # ------------------------------------------------------#
 
+# Import libraries
 import numpy as np
 import math
 
